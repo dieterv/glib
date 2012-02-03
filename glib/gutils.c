@@ -101,45 +101,58 @@
  */
 
 #ifdef G_PLATFORM_WIN32
+gchar *              _g_win32_get_glib_dll_directory (void);
 
+/*
+ * _g_win32_get_glib_dll_directory:
+ * @Returns: the directory where the GLib DLL is.
+ *
+ * This function is different from
+ * g_win32_get_package_installation_directory_of_module() in that
+ * here we return the actual folder where the GLib DLL is. We don't
+ * do the check for it being in a "bin" or "lib" subfolder and then
+ * returning the parent of that.
+ *
+ * In a statically built GLib, glib_dll will be NULL and we will
+ * thus look up the application's .exe file location.
+ *
+ * <note><para>
+ * This function is private.
+ * </para></note>
+ *
+ * Return value: a pointer to a newly allocated UTF-8 string containing
+ *               the directory where the GLib DLL is. This value must be
+ *               freed with g_free(). If an error occurs, %NULL will be
+ *               returned.
+ */
 gchar *
-_glib_get_dll_directory (void)
+_g_win32_get_glib_dll_directory (void)
 {
-  gchar *retval;
-  gchar *p;
-  wchar_t wc_fn[MAX_PATH];
+  wchar_t buffer[MAX_PATH];
+  wchar_t *p = NULL;
+  gchar *retval = NULL;
 
 #ifdef DLL_EXPORT
   if (glib_dll == NULL)
     return NULL;
 #endif
 
-  /* This code is different from that in
-   * g_win32_get_package_installation_directory_of_module() in that
-   * here we return the actual folder where the GLib DLL is. We don't
-   * do the check for it being in a "bin" or "lib" subfolder and then
-   * returning the parent of that.
-   *
-   * In a statically built GLib, glib_dll will be NULL and we will
-   * thus look up the application's .exe file's location.
-   */
-  if (!GetModuleFileNameW (glib_dll, wc_fn, MAX_PATH))
+  if (!GetModuleFileNameW (glib_dll, buffer, MAX_PATH))
     return NULL;
 
-  retval = g_utf16_to_utf8 (wc_fn, -1, NULL, NULL, NULL);
-
-  p = strrchr (retval, G_DIR_SEPARATOR);
+  p = wcsrchr (buffer, G_DIR_SEPARATOR);
   if (p == NULL)
-    {
-      /* Wtf? */
-      return NULL;
-    }
-  *p = '\0';
+    return NULL;
+  else
+    *p = '\0';
+
+  retval = g_utf16_to_utf8 (buffer, -1, NULL, NULL, NULL);
+  if (!retval || !retval[0])
+    return NULL;
 
   return retval;
 }
-
-#endif
+#endif /* G_PLATFORM_WIN32 */
 
 #if !defined (HAVE_MEMMOVE) && !defined (HAVE_WORKING_BCOPY)
 /**
