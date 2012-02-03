@@ -380,7 +380,7 @@ fi
 AC_SUBST(PERL_PATH)
 
 # Need suitable python path for greport
-AM_PATH_PYTHON(2.5,,PYTHON="/usr/bin/env python2.5")
+AM_PATH_PYTHON([2.5])
 
 
 dnl ***********************
