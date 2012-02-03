@@ -92,14 +92,16 @@ gchar*          g_win32_error_message (gint error);
 #endif
 #endif
 
+GLIB_DEPRECATED_FOR(g_win32_get_package_installation_directory_of_module)
 gchar*          g_win32_get_package_installation_directory (const gchar *package,
 							    const gchar *dll_name);
 
+GLIB_DEPRECATED_FOR(g_win32_get_package_installation_directory_of_module)
 gchar*          g_win32_get_package_installation_subdirectory (const gchar *package,
 							       const gchar *dll_name,
 							       const gchar *subdir);
 
-#endif
+#endif /* G_DISABLE_DEPRECATED */
 
 gchar*          g_win32_get_package_installation_directory_of_module (gpointer hmodule);
 
