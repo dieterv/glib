@@ -80,9 +80,7 @@
 #endif /* G_PLATFORM_WIN32 */
 
 #ifdef G_OS_WIN32
-#  include <direct.h>
 #  include <shlobj.h>
-#  include <process.h>
 #endif
 
 #ifdef HAVE_CARBON
