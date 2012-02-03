@@ -75,11 +75,8 @@
 #ifdef G_PLATFORM_WIN32
 #include "gconvert.h"
 #include "gwin32.h"
-#endif
-
-#ifdef G_PLATFORM_WIN32
-#  include <windows.h>
-#  include <lmcons.h>		/* For UNLEN */
+#include <windows.h>
+#include <lmcons.h> /* For UNLEN */
 #endif /* G_PLATFORM_WIN32 */
 
 #ifdef G_OS_WIN32
