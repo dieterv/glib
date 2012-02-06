@@ -608,32 +608,6 @@ get_special_folder (int csidl)
   return retval;
 }
 
-static char *
-get_windows_directory_root (void)
-{
-  wchar_t wwindowsdir[MAX_PATH];
-
-  if (GetWindowsDirectoryW (wwindowsdir, G_N_ELEMENTS (wwindowsdir)))
-    {
-      /* Usually X:\Windows, but in terminal server environments
-       * might be an UNC path, AFAIK.
-       */
-      char *windowsdir = g_utf16_to_utf8 (wwindowsdir, -1, NULL, NULL, NULL);
-      char *p;
-
-      if (windowsdir == NULL)
-	return g_strdup ("C:\\");
-
-      p = (char *) g_path_skip_root (windowsdir);
-      if (G_IS_DIR_SEPARATOR (p[-1]) && p[-2] != ':')
-	p--;
-      *p = '\0';
-      return windowsdir;
-    }
-  else
-    return g_strdup ("C:\\");
-}
-
 #endif
 
 /* HOLDS: g_utils_global_lock */
@@ -656,14 +630,6 @@ g_get_any_init_do (void)
       g_tmp_dir = g_strdup (g_getenv ("TEMP"));
     }
 
-#ifdef G_OS_WIN32
-  if (g_tmp_dir == NULL || *g_tmp_dir == '\0')
-    {
-      g_free (g_tmp_dir);
-      g_tmp_dir = get_windows_directory_root ();
-    }
-#else
- 
 #ifdef P_tmpdir
   if (g_tmp_dir == NULL || *g_tmp_dir == '\0')
     {
@@ -720,8 +686,6 @@ g_get_any_init_do (void)
   if (!g_home_dir)
     g_home_dir = get_special_folder (CSIDL_PROFILE);
   
-  if (!g_home_dir)
-    g_home_dir = get_windows_directory_root ();
 #endif /* G_OS_WIN32 */
   
 #ifdef HAVE_PWD_H
