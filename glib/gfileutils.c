@@ -2559,7 +2559,7 @@ g_get_current_dir (void)
 }
 
 
-/* NOTE : Keep this part last to ensure nothing in this file uses thn
+/* NOTE : Keep this part last to ensure nothing in this file uses the
  * below binary compatibility versions.
  */
 #if defined (G_OS_WIN32) && !defined (_WIN64)

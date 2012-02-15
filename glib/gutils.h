@@ -110,7 +110,7 @@ const gchar *         g_get_user_cache_dir     (void);
 const gchar * const * g_get_system_data_dirs   (void);
 
 #ifdef G_OS_WIN32
-/* This functions is not part of the public GLib API */
+/* This function is not part of the public GLib API */
 const gchar * const * g_win32_get_system_data_dirs_for_module (void (*address_of_function)(void));
 #endif
 

@@ -260,7 +260,7 @@ typedef enum
  *                               a value never returned from g_unichar_get_script()
  * @G_UNICODE_SCRIPT_COMMON:     a character used by multiple different scripts
  * @G_UNICODE_SCRIPT_INHERITED:  a mark glyph that takes its script from the
- * i                             base glyph to which it is attached
+ *                               base glyph to which it is attached
  * @G_UNICODE_SCRIPT_ARABIC:     Arabic
  * @G_UNICODE_SCRIPT_ARMENIAN:   Armenian
  * @G_UNICODE_SCRIPT_BENGALI:    Bengali

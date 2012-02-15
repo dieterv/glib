@@ -752,7 +752,7 @@ g_get_any_init_do (void)
 #  if defined (HAVE_POSIX_GETPWUID_R) || defined (HAVE_NONPOSIX_GETPWUID_R)
     struct passwd pwd;
 #    ifdef _SC_GETPW_R_SIZE_MAX  
-    /* This reurns the maximum length */
+    /* This returns the maximum length */
     glong bufsize = sysconf (_SC_GETPW_R_SIZE_MAX);
     
     if (bufsize < 0)
@@ -1761,7 +1761,7 @@ g_reload_user_special_dirs_cache (void)
  * Returns the full path of a special directory using its logical id.
  *
  * On Unix this is done using the XDG special user directories.
- * For compatibility with existing practise, %G_USER_DIRECTORY_DESKTOP
+ * For compatibility with existing practice, %G_USER_DIRECTORY_DESKTOP
  * falls back to <filename>$HOME/Desktop</filename> when XDG special
  * user directories have not been set up. 
  *

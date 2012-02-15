@@ -67,7 +67,7 @@
  * On Windows, the file protection mechanism is not at all POSIX-like,
  * and the underlying function in the C library only checks the
  * FAT-style READONLY attribute, and does not look at the ACL of a
- * file at all. This function is this in practise almost useless on
+ * file at all. This function is thus in practice almost useless on
  * Windows. Software that needs to handle file permissions on Windows
  * more exactly should use the Win32 API.
  *
