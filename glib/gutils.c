@@ -296,15 +296,6 @@ g_memmove (gpointer      dest,
  * 
  * Specifies a function to be called at normal program termination.
  *
- * Since GLib 2.8.2, on Windows g_atexit() actually is a preprocessor
- * macro that maps to a call to the atexit() function in the C
- * library. This means that in case the code that calls g_atexit(),
- * i.e. atexit(), is in a DLL, the function will be called when the
- * DLL is detached from the program. This typically makes more sense
- * than that the function is called when the GLib DLL is detached,
- * which happened earlier when g_atexit() was a function in the GLib
- * DLL.
- *
  * The behaviour of atexit() in the context of dynamically loaded
  * modules is not formally specified and varies wildly.
  *
@@ -320,6 +311,15 @@ g_memmove (gpointer      dest,
  * unloaded, the registered atexit functions (if any) residing in that
  * module are called, regardless where the code that registered them
  * resided. This is presumably the most robust approach.
+ *
+ * Since GLib 2.8.2, on Windows g_atexit() actually is a preprocessor
+ * macro that maps to a call to the atexit() function in the C
+ * library. This means that in case the code that calls g_atexit(),
+ * i.e. atexit(), is in a DLL, the function will be called when the
+ * DLL is detached from the program. This typically makes more sense
+ * than that the function is called when the GLib DLL is detached,
+ * which happened earlier when g_atexit() was a function in the GLib
+ * DLL.
  *
  * As can be seen from the above, for portability it's best to avoid
  * calling g_atexit() (or atexit()) except in the main executable of a
