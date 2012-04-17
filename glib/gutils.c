@@ -1813,31 +1813,15 @@ get_module_for_address (gconstpointer address)
 {
   /* Holds the g_utils_global lock */
 
-  static gboolean beenhere = FALSE;
-  typedef BOOL (WINAPI *t_GetModuleHandleExA) (DWORD, LPCTSTR, HMODULE *);
-  static t_GetModuleHandleExA p_GetModuleHandleExA = NULL;
   HMODULE hmodule = NULL;
 
   if (!address)
     return NULL;
 
-  if (!beenhere)
-    {
-      p_GetModuleHandleExA =
-	(t_GetModuleHandleExA) GetProcAddress (GetModuleHandle ("kernel32.dll"),
-					       "GetModuleHandleExA");
-      beenhere = TRUE;
-    }
-
-  if (p_GetModuleHandleExA == NULL ||
-      !(*p_GetModuleHandleExA) (GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT |
-				GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-				address, &hmodule))
-    {
-      MEMORY_BASIC_INFORMATION mbi;
-      VirtualQuery (address, &mbi, sizeof (mbi));
-      hmodule = (HMODULE) mbi.AllocationBase;
-    }
+  if (!GetModuleHandleExW (GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT |
+                           GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+                           address, &hmodule))
+    return NULL;
 
   return hmodule;
 }
