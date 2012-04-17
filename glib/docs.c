@@ -2378,6 +2378,11 @@
  *
  * On non-Windows platforms, it is not defined.
  *
+ * <note><para>
+ * As of GLib 2.14 only NT-based Windows versions are supported and this
+ * macro always evaluates to %TRUE.
+ * </para></note>
+ *
  * Since: 2.6
  */
 
@@ -2389,6 +2394,11 @@
  * %TRUE if the code is running on an NT-based Windows operating system.
  *
  * On non-Windows platforms, it is not defined.
+ *
+ * <note><para>
+ * As of GLib 2.14 only NT-based Windows versions are supported and this
+ * macro always evaluates to %TRUE.
+ * </para></note>
  *
  * Since: 2.6
  */
