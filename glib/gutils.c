@@ -746,46 +746,7 @@ g_get_any_init_do (void)
       g_tmp_dir = g_strdup ("/tmp");
     }
 #endif	/* G_OS_WIN32 */
-  
-#ifdef G_OS_WIN32
-  /* We check $HOME first for Win32, though it is a last resort for Unix
-   * where we prefer the results of getpwuid().
-   */
-  g_home_dir = g_strdup (g_getenv ("HOME"));
 
-  /* Only believe HOME if it is an absolute path and exists */
-  if (g_home_dir)
-    {
-      if (!(g_path_is_absolute (g_home_dir) &&
-	    g_file_test (g_home_dir, G_FILE_TEST_IS_DIR)))
-	{
-	  g_free (g_home_dir);
-	  g_home_dir = NULL;
-	}
-    }
-  
-  /* In case HOME is Unix-style (it happens), convert it to
-   * Windows style.
-   */
-  if (g_home_dir)
-    {
-      gchar *p;
-      while ((p = strchr (g_home_dir, '/')) != NULL)
-	*p = '\\';
-    }
-
-  if (!g_home_dir)
-    {
-      /* USERPROFILE is probably the closest equivalent to $HOME? */
-      if (g_getenv ("USERPROFILE") != NULL)
-	g_home_dir = g_strdup (g_getenv ("USERPROFILE"));
-    }
-
-  if (!g_home_dir)
-    g_home_dir = get_special_folder (CSIDL_PROFILE);
-  
-#endif /* G_OS_WIN32 */
-  
 #ifdef HAVE_PWD_H
   {
     struct passwd *pw = NULL;
@@ -922,7 +883,9 @@ g_get_any_init_do (void)
 #ifndef G_OS_WIN32
   if (!g_home_dir)
     g_home_dir = g_strdup (g_getenv ("HOME"));
-#endif
+#else
+  g_home_dir = _g_win32_get_known_folder(FOLDERID_Profile, CSIDL_PROFILE);
+#endif /* G_OS_WIN32 */
 
 #ifdef __EMX__
   /* change '\\' in %HOME% to '/' */
