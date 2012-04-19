@@ -1206,18 +1206,19 @@ g_set_application_name (const gchar *application_name)
 /**
  * g_get_user_data_dir:
  * 
- * Returns a base directory in which to access application data such
- * as icons that is customized for a particular user.  
+ * Returns a base directory in which to access user specific application data
+ * files, such as a list of recently used documents or application plugins.
  *
  * On UNIX platforms this is determined using the mechanisms described in
  * the <ulink url="http://www.freedesktop.org/Standards/basedir-spec">
  * XDG Base Directory Specification</ulink>.
  * In this case the directory retrieved will be XDG_DATA_HOME.
  *
- * On Windows this is the folder to use for local (as opposed to
- * roaming) application data. See documentation for
- * CSIDL_LOCAL_APPDATA. Note that on Windows it thus is the same as
- * what g_get_user_config_dir() returns.
+ * On Windows, the same mechanisms are used except the default is the directory
+ * the system uses for local (as opposed to roaming) application data.
+ * See documentation for CSIDL_LOCAL_APPDATA or FOLDERID_LocalAppData.
+ * Note that on Windows it thus is the same as what g_get_user_config_dir()
+ * and g_get_user_cache_dir() return.
  *
  * Return value: a string owned by GLib that must not be modified 
  *               or freed.
@@ -1226,31 +1227,33 @@ g_set_application_name (const gchar *application_name)
 const gchar *
 g_get_user_data_dir (void)
 {
-  gchar *data_dir;  
+  gchar *data_dir;
 
   G_LOCK (g_utils_global);
 
   if (!g_user_data_dir)
     {
-#ifdef G_OS_WIN32
-      data_dir = get_special_folder (CSIDL_LOCAL_APPDATA);
-#else
       data_dir = (gchar *) g_getenv ("XDG_DATA_HOME");
 
       if (data_dir && data_dir[0])
         data_dir = g_strdup (data_dir);
-#endif
-      if (!data_dir || !data_dir[0])
-	{
-	  g_get_any_init ();
 
-	  if (g_home_dir)
-	    data_dir = g_build_filename (g_home_dir, ".local", 
-					 "share", NULL);
-	  else
-	    data_dir = g_build_filename (g_tmp_dir, g_user_name, ".local", 
-					 "share", NULL);
-	}
+      if (!data_dir || !data_dir[0])
+        {
+#ifdef G_OS_WIN32
+          data_dir = _g_win32_get_known_folder (FOLDERID_LocalAppData,
+                                                CSIDL_LOCAL_APPDATA);
+#else
+          g_get_any_init ();
+
+          if (g_home_dir)
+            data_dir = g_build_filename (g_home_dir, ".local",
+                                         "share", NULL);
+          else
+            data_dir = g_build_filename (g_tmp_dir, g_user_name, ".local",
+                                         "share", NULL);
+#endif
+        }
 
       g_user_data_dir = data_dir;
     }
