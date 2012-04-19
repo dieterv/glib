@@ -616,6 +616,15 @@ g_get_any_init_do (void)
 {
   gchar hostname[100];
 
+#ifdef G_OS_WIN32
+  wchar_t buffer[MAX_PATH];
+
+  if (GetTempPathW (MAX_PATH, buffer))
+    {
+      g_free (g_tmp_dir);
+      g_tmp_dir = g_utf16_to_utf8 (buffer, -1, NULL, NULL, NULL);
+    }
+#else
   g_tmp_dir = g_strdup (g_getenv ("TMPDIR"));
 
   if (g_tmp_dir == NULL || *g_tmp_dir == '\0')
@@ -647,7 +656,7 @@ g_get_any_init_do (void)
       g_free (g_tmp_dir);
       g_tmp_dir = g_strdup ("/tmp");
     }
-#endif	/* !G_OS_WIN32 */
+#endif	/* G_OS_WIN32 */
   
 #ifdef G_OS_WIN32
   /* We check $HOME first for Win32, though it is a last resort for Unix
@@ -959,10 +968,16 @@ g_get_home_dir (void)
 /**
  * g_get_tmp_dir:
  *
- * Gets the directory to use for temporary files. This is found from 
- * inspecting the environment variables <envar>TMPDIR</envar>, 
- * <envar>TMP</envar>, and <envar>TEMP</envar> in that order. If none 
- * of those are defined "/tmp" is returned on UNIX and "C:\" on Windows. 
+ * Gets the directory to use for temporary files.
+ *
+ * On UNIX platforms this is found from inspecting the environment variables
+ * <envar>TMPDIR</envar>, <envar>TMP</envar> and <envar>TEMP</envar> in that
+ * order. If none of those are defined "/tmp" is returned.
+ *
+ * On Windows the environment variables <envar>TMP</envar>, <envar>TEMP</envar>,
+ * <envar>USERPROFILE </envar> and the Windows directory are inspected in
+ * that order.
+ *
  * The encoding of the returned string is system-defined. On Windows, 
  * it is always UTF-8. The return value is never %NULL or the empty string.
  *
