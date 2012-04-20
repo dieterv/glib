@@ -1401,10 +1401,8 @@ g_get_user_cache_dir (void)
  * In the case that this variable is not set, GLib will issue a warning
  * message to stderr and return the value of g_get_user_cache_dir().
  *
- * On Windows this is the folder to use for local (as opposed to
- * roaming) application data. See documentation for
- * CSIDL_LOCAL_APPDATA.  Note that on Windows it thus is the same as
- * what g_get_user_config_dir() returns.
+ * On Windows, the same mechanisms are used except the default is the same
+ * as what g_get_tmp_dir() returns.
  *
  * Returns: a string owned by GLib that must not be modified or freed.
  *
@@ -1413,26 +1411,27 @@ g_get_user_cache_dir (void)
 const gchar *
 g_get_user_runtime_dir (void)
 {
-#ifndef G_OS_WIN32
   static const gchar *runtime_dir;
   static gsize initialised;
 
   if (g_once_init_enter (&initialised))
     {
       runtime_dir = g_strdup (getenv ("XDG_RUNTIME_DIR"));
-      
       g_once_init_leave (&initialised, 1);
     }
 
-  if (runtime_dir)
-    return runtime_dir;
-
-  /* Both fallback for UNIX and the default
-   * in Windows: use the user cache directory.
-   */
+  if (!runtime_dir || !runtime_dir[0])
+    {
+#ifdef G_OS_WIN32
+      /* Fallback on Windows: temp directory */
+      runtime_dir = g_get_tmp_dir ();
+#else
+      /* Fallback on UNIX: cache directory */
+      runtime_dir = g_get_user_cache_dir ();
 #endif
+    }
 
-  return g_get_user_cache_dir ();
+  return runtime_dir;
 }
 
 #ifdef HAVE_CARBON
