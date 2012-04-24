@@ -675,29 +675,6 @@ static  gchar  **g_user_special_dirs = NULL;
 /* fifteen minutes of fame for everybody */
 #define G_USER_DIRS_EXPIRE      15 * 60
 
-#ifdef G_OS_WIN32
-
-static gchar *
-get_special_folder (int csidl)
-{
-  wchar_t path[MAX_PATH+1];
-  HRESULT hr;
-  LPITEMIDLIST pidl = NULL;
-  BOOL b;
-  gchar *retval = NULL;
-
-  hr = SHGetSpecialFolderLocation (NULL, csidl, &pidl);
-  if (hr == S_OK)
-    {
-      b = SHGetPathFromIDListW (pidl, path);
-      if (b)
-	retval = g_utf16_to_utf8 (path, -1, NULL, NULL, NULL);
-      CoTaskMemFree (pidl);
-    }
-  return retval;
-}
-
-#endif
 
 /* HOLDS: g_utils_global_lock */
 static void
