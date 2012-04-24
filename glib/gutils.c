@@ -1971,26 +1971,23 @@ g_get_system_config_dirs (void)
 
   if (!g_system_config_dirs)
     {
-#ifdef G_OS_WIN32
-      conf_dirs = get_special_folder (CSIDL_COMMON_APPDATA);
-      if (conf_dirs)
-	{
-	  conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
-	  g_free (conf_dirs);
-	}
-      else
-	{
-	  /* Return empty list */
-	  conf_dir_vector = g_strsplit ("", G_SEARCHPATH_SEPARATOR_S, 0);
-	}
-#else
       conf_dirs = (gchar *) g_getenv ("XDG_CONFIG_DIRS");
 
       if (!conf_dirs || !conf_dirs[0])
+        {
+#ifdef G_OS_WIN32
+          conf_dirs = _g_win32_get_known_folder (FOLDERID_ProgramData, CSIDL_COMMON_APPDATA);
+          conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+          g_free (conf_dirs);
+#else
           conf_dirs = "/etc/xdg";
-
-      conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+          conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
 #endif
+        }
+      else
+        {
+          conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+        }
 
       g_system_config_dirs = conf_dir_vector;
     }
