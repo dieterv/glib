@@ -108,28 +108,13 @@ const gchar *         g_get_user_data_dir      (void);
 const gchar *         g_get_user_config_dir    (void);
 const gchar *         g_get_user_cache_dir     (void);
 const gchar * const * g_get_system_data_dirs   (void);
+const gchar * const * g_get_system_config_dirs (void);
+const gchar *         g_get_user_runtime_dir   (void);
 
 #ifdef G_OS_WIN32
 /* This function is not part of the public GLib API */
 const gchar * const * g_win32_get_system_data_dirs_for_module (void (*address_of_function)(void));
 #endif
-
-#if defined (G_OS_WIN32) && defined (G_CAN_INLINE) && !defined (__cplusplus)
-/* This function is not part of the public GLib API either. Just call
- * g_get_system_data_dirs() in your code, never mind that that is
- * actually a macro and you will in fact call this inline function.
- */
-static inline const gchar * const *
-_g_win32_get_system_data_dirs (void)
-{
-  return g_win32_get_system_data_dirs_for_module ((void (*)(void)) &_g_win32_get_system_data_dirs);
-}
-#define g_get_system_data_dirs _g_win32_get_system_data_dirs
-#endif
-
-const gchar * const * g_get_system_config_dirs (void);
-
-const gchar * g_get_user_runtime_dir (void);
 
 /**
  * GUserDirectory:

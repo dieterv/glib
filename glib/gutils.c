@@ -1768,8 +1768,6 @@ g_get_user_special_dir (GUserDirectory directory)
 
 #ifdef G_OS_WIN32
 
-#undef g_get_system_data_dirs
-
 static HMODULE
 get_module_for_address (gconstpointer address)
 {
@@ -1839,37 +1837,9 @@ g_win32_get_system_data_dirs_for_module (void (*address_of_function)())
 
   data_dirs = g_array_new (TRUE, TRUE, sizeof (char *));
 
-  /* Documents and Settings\All Users\Application Data */
-  p = get_special_folder (CSIDL_COMMON_APPDATA);
+  p = _g_win32_get_known_folder (FOLDERID_ProgramData, CSIDL_COMMON_APPDATA);
   if (p)
     g_array_append_val (data_dirs, p);
-  
-  /* Documents and Settings\All Users\Documents */
-  p = get_special_folder (CSIDL_COMMON_DOCUMENTS);
-  if (p)
-    g_array_append_val (data_dirs, p);
-	
-  /* Using the above subfolders of Documents and Settings perhaps
-   * makes sense from a Windows perspective.
-   *
-   * But looking at the actual use cases of this function in GTK+
-   * and GNOME software, what we really want is the "share"
-   * subdirectory of the installation directory for the package
-   * our caller is a part of.
-   *
-   * The address_of_function parameter, if non-NULL, points to a
-   * function in the calling module. Use that to determine that
-   * module's installation folder, and use its "share" subfolder.
-   *
-   * Additionally, also use the "share" subfolder of the installation
-   * locations of GLib and the .exe file being run.
-   *
-   * To guard against none of the above being what is really wanted,
-   * callers of this function should have Win32-specific code to look
-   * up their installation folder themselves, and handle a subfolder
-   * "share" of it in the same way as the folders returned from this
-   * function.
-   */
 
   p = get_module_share_dir (address_of_function);
   if (p)
@@ -1915,15 +1885,9 @@ g_win32_get_system_data_dirs_for_module (void (*address_of_function)())
  * XDG Base Directory Specification</ulink>
  * In this case the list of directories retrieved will be XDG_DATA_DIRS.
  *
- * On Windows the first elements in the list are the Application Data
- * and Documents folders for All Users. (These can be determined only
- * on Windows 2000 or later and are not present in the list on other
- * Windows versions.) See documentation for CSIDL_COMMON_APPDATA and
- * CSIDL_COMMON_DOCUMENTS.
- *
- * Then follows the "share" subfolder in the installation folder for
- * the package containing the DLL that calls this function, if it can
- * be determined.
+ * On Windows the first element in the list is the "share" subfolder in
+ * the installation folder for the package containing the DLL that calls
+ * this function, if it can be determined.
  * 
  * Finally the list contains the "share" subfolder in the installation
  * folder for GLib, and in the installation folder for the package the
@@ -1937,8 +1901,8 @@ g_win32_get_system_data_dirs_for_module (void (*address_of_function)())
  * Note that on Windows the returned list can vary depending on where
  * this function is called.
  *
- * Return value: (array zero-terminated=1) (transfer none): a %NULL-terminated array of strings owned by GLib that must 
- *               not be modified or freed.
+ * Return value: (array zero-terminated=1) (transfer none): a %NULL-terminated
+ *               array of strings owned by GLib that must not be modified or freed.
  * Since: 2.6
  **/
 const gchar * const * 
@@ -1950,16 +1914,21 @@ g_get_system_data_dirs (void)
 
   if (!g_system_data_dirs)
     {
-#ifdef G_OS_WIN32
-      data_dir_vector = (gchar **) g_win32_get_system_data_dirs_for_module (NULL);
-#else
       gchar *data_dirs = (gchar *) g_getenv ("XDG_DATA_DIRS");
 
       if (!data_dirs || !data_dirs[0])
+        {
+#ifdef G_OS_WIN32
+          data_dir_vector = (gchar **) g_win32_get_system_data_dirs_for_module (NULL);
+#else
           data_dirs = "/usr/local/share/:/usr/share/";
-
-      data_dir_vector = g_strsplit (data_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+          data_dir_vector = g_strsplit (data_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
 #endif
+        }
+      else
+        {
+          data_dir_vector = g_strsplit (data_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+        }
 
       g_system_data_dirs = data_dir_vector;
     }
