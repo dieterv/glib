@@ -511,21 +511,21 @@ g_find_program_in_path (const gchar *program)
   n = GetModuleFileNameW (NULL, wfilename, MAXPATHLEN);
   if (n > 0 && n < MAXPATHLEN)
     filename = g_utf16_to_utf8 (wfilename, -1, NULL, NULL, NULL);
-  
+
   n = GetSystemDirectoryW (wsysdir, MAXPATHLEN);
   if (n > 0 && n < MAXPATHLEN)
     sysdir = g_utf16_to_utf8 (wsysdir, -1, NULL, NULL, NULL);
-  
+
   n = GetWindowsDirectoryW (wwindir, MAXPATHLEN);
   if (n > 0 && n < MAXPATHLEN)
     windir = g_utf16_to_utf8 (wwindir, -1, NULL, NULL, NULL);
-  
+
   if (filename)
     {
       appdir = g_path_get_dirname (filename);
       g_free (filename);
     }
-  
+
   path = g_strdup (path);
 
   if (windir)
@@ -535,7 +535,7 @@ g_find_program_in_path (const gchar *program)
       g_free ((gchar *) tem);
       g_free (windir);
     }
-  
+
   if (sysdir)
     {
       const gchar *tem = path;
@@ -543,13 +543,13 @@ g_find_program_in_path (const gchar *program)
       g_free ((gchar *) tem);
       g_free (sysdir);
     }
-  
+
   {
     const gchar *tem = path;
     path = g_strconcat (".;", path, NULL);
     g_free ((gchar *) tem);
   }
-  
+
   if (appdir)
     {
       const gchar *tem = path;
@@ -841,7 +841,7 @@ g_get_any_init_do (void)
   }
   
 #else /* !HAVE_PWD_H */
-  
+
 #ifdef G_OS_WIN32
   {
     guint len = UNLEN+1;
@@ -1073,21 +1073,21 @@ g_get_prgname (void)
       static gboolean beenhere = FALSE;
 
       if (!beenhere)
-	{
-	  gchar *utf8_buffer = NULL;
-	  wchar_t buffer[MAX_PATH+1];
+        {
+          gchar *utf8_buffer = NULL;
+          wchar_t buffer[MAX_PATH + 1];
 
-	  beenhere = TRUE;
-	  if (GetModuleFileNameW (GetModuleHandle (NULL),
+          beenhere = TRUE;
+          if (GetModuleFileNameW (GetModuleHandle (NULL),
                                   buffer, G_N_ELEMENTS (buffer)) > 0)
-	    utf8_buffer = g_utf16_to_utf8 (buffer, -1, NULL, NULL, NULL);
+            utf8_buffer = g_utf16_to_utf8 (buffer, -1, NULL, NULL, NULL);
 
-	  if (utf8_buffer)
-	    {
-	      g_prgname = g_path_get_basename (utf8_buffer);
-	      g_free (utf8_buffer);
-	    }
-	}
+          if (utf8_buffer)
+            {
+              g_prgname = g_path_get_basename (utf8_buffer);
+              g_free (utf8_buffer);
+            }
+        }
     }
 #endif
   retval = g_prgname;
@@ -1168,7 +1168,7 @@ void
 g_set_application_name (const gchar *application_name)
 {
   gboolean already_set = FALSE;
-	
+
   G_LOCK (g_application_name);
   if (g_application_name)
     already_set = TRUE;
