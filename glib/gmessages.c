@@ -77,7 +77,6 @@
 #ifdef G_OS_WIN32
 #include <process.h>		/* For getpid() */
 #include <io.h>
-#  define _WIN32_WINDOWS 0x0401 /* to get IsDebuggerPresent */
 #  include <windows.h>
 #endif
 
