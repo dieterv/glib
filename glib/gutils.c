@@ -1074,18 +1074,18 @@ g_get_prgname (void)
 
       if (!beenhere)
 	{
-	  gchar *utf8_buf = NULL;
-	  wchar_t buf[MAX_PATH+1];
+	  gchar *utf8_buffer = NULL;
+	  wchar_t buffer[MAX_PATH+1];
 
 	  beenhere = TRUE;
 	  if (GetModuleFileNameW (GetModuleHandle (NULL),
-				  buf, G_N_ELEMENTS (buf)) > 0)
-	    utf8_buf = g_utf16_to_utf8 (buf, -1, NULL, NULL, NULL);
+                                  buffer, G_N_ELEMENTS (buffer)) > 0)
+	    utf8_buffer = g_utf16_to_utf8 (buffer, -1, NULL, NULL, NULL);
 
-	  if (utf8_buf)
+	  if (utf8_buffer)
 	    {
-	      g_prgname = g_path_get_basename (utf8_buf);
-	      g_free (utf8_buf);
+	      g_prgname = g_path_get_basename (utf8_buffer);
+	      g_free (utf8_buffer);
 	    }
 	}
     }
