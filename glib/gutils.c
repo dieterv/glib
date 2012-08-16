@@ -80,8 +80,37 @@
 #endif /* G_PLATFORM_WIN32 */
 
 #ifdef G_OS_WIN32
-#  include <shlobj.h>
+/* shlobj.h SHGetFolderPathW usage can be removed when Windows Vista
+ * (with matching SDK's) becomes the minimum supported Windows version. */
+#include <shlobj.h>
+
+static const GUID FOLDERID_Profile =
+  { 0x5e6c858f, 0x0e22, 0x4760, { 0x9a, 0xfe, 0xea, 0x33, 0x17, 0xb6, 0x71, 0x73 } };
+static const GUID FOLDERID_LocalAppData =
+  { 0xf1b32785, 0x6fba, 0x4fcf, { 0x9d, 0x55, 0x7b, 0x8e, 0x7f, 0x15, 0x70, 0x91 } };
+static const GUID FOLDERID_Desktop =
+  { 0xb4bfcc3a, 0xdb2c, 0x424c, { 0xb0, 0x29, 0x7f, 0xe9, 0x9a, 0x87, 0xc6, 0x41 } };
+static const GUID FOLDERID_Documents =
+  { 0xfdd39ad0, 0x238f, 0x46af, { 0xad, 0xb4, 0x6c, 0x85, 0x48, 0x03, 0x69, 0xc7 } };
+static const GUID FOLDERID_Downloads =
+  { 0x374de290, 0x123f, 0x4565, { 0x91, 0x64, 0x39, 0xc4, 0x92, 0x5e, 0x46, 0x7b } };
+static const GUID FOLDERID_Music =
+  { 0x4bd8d571, 0x6d19, 0x48d3, { 0xbe, 0x97, 0x42, 0x22, 0x20, 0x08, 0x0e, 0x43 } };
+static const GUID FOLDERID_Pictures =
+  { 0x33e28130, 0x4e1e, 0x4676, { 0x83, 0x5a, 0x98, 0x39, 0x5c, 0x3b, 0xc3, 0xbb } };
+static const GUID FOLDERID_Public =
+  { 0xdfdf76a2, 0xc82a, 0x4d63, { 0x90, 0x6a, 0x56, 0x44, 0xac, 0x45, 0x73, 0x85 } };
+static const GUID FOLDERID_Templates =
+  { 0xa63293e8, 0x664e, 0x48db, { 0xa0, 0x79, 0xdf, 0x75, 0x9e, 0x05, 0x09, 0xf7 } };
+static const GUID FOLDERID_Videos =
+  { 0x18989b1d, 0x99b5, 0x455b, { 0x84, 0x1c, 0xab, 0x7c, 0x74, 0xe4, 0xdd, 0xfc } };
+static const GUID FOLDERID_ProgramData =
+  { 0x62ab5d82, 0xfdc1, 0x4dc3, { 0xa9, 0xdd, 0x07, 0x0d, 0x1d, 0x49, 0x5d, 0x97 } };
+
+#ifndef KF_FLAG_DONT_VERIFY
+#  define KF_FLAG_DONT_VERIFY 0x00004000
 #endif
+#endif /* G_OS_WIN32 */
 
 #ifdef HAVE_CARBON
 #include <CoreServices/CoreServices.h>
@@ -153,6 +182,67 @@ _g_win32_get_glib_dll_directory (void)
   return retval;
 }
 #endif /* G_PLATFORM_WIN32 */
+
+#ifdef G_OS_WIN32
+static gchar *      _g_win32_get_known_folder (GUID folderid, int csidl);
+
+/*
+ * _g_win32_get_known_folder:
+ * @folderid: a KNOWNFOLDERID constant representing a known folder
+ * @csidl: a CSIDL value representing a special folder
+ * @Returns: the directory corresponding to the specified @GUID or @csidl.
+ *
+ * Starting with Windows Vista the Known Folder API is used and this
+ * function returns the path of the known folder corresponding to @folderid.
+ * On older Windows versions, the CSIDL API is used and this function
+ * return the path of the special folder corresponding to @csidl
+ *
+ * <note><para>
+ * This function is private.
+ * </para></note>
+ *
+ * Return value: a pointer to a newly allocated UTF-8 string containing
+ *               the directory corresponding to the specified @GUID or @csidl.
+ *               This value must be freed with g_free(). If an error occurs,
+ *               %NULL will be returned.
+ */
+static gchar *
+_g_win32_get_known_folder (GUID folderid, int csidl)
+{
+  HMODULE shell32 = NULL;
+  typedef HRESULT (WINAPI *SHGETKNOWNFOLDERPATH) (const GUID *rfid,
+                                                  DWORD       dwFlags,
+                                                  HANDLE      hToken,
+                                                  PWSTR      *ppszPath);
+  static SHGETKNOWNFOLDERPATH g_SHGetKnownFolderPath = NULL;
+  wchar_t *k_buffer = NULL;
+  wchar_t s_buffer[MAX_PATH];
+  HRESULT hres;
+  gchar *retval = NULL;
+
+  shell32 = GetModuleHandleW (L"SHELL32.DLL");
+  if (shell32 != NULL && g_SHGetKnownFolderPath == NULL)
+    g_SHGetKnownFolderPath = (SHGETKNOWNFOLDERPATH) GetProcAddress (shell32, "SHGetKnownFolderPath");
+
+  if (g_SHGetKnownFolderPath != NULL)
+    {
+      hres = (*g_SHGetKnownFolderPath) (&folderid, KF_FLAG_DONT_VERIFY, NULL, &k_buffer);
+      if (hres == S_OK)
+        {
+          retval = g_utf16_to_utf8 (k_buffer, -1, NULL, NULL, NULL);
+          CoTaskMemFree (k_buffer);
+        }
+    }
+  else
+    {
+      hres = SHGetFolderPathW (NULL, csidl|CSIDL_FLAG_DONT_VERIFY, NULL, 0, s_buffer);
+      if (hres == S_OK)
+        retval = g_utf16_to_utf8 (s_buffer, -1, NULL, NULL, NULL);
+    }
+
+  return retval;
+}
+#endif /* G_OS_WIN32 */
 
 #if !defined (HAVE_MEMMOVE) && !defined (HAVE_WORKING_BCOPY)
 /**
@@ -377,8 +467,7 @@ g_find_program_in_path (const gchar *program)
   gchar *filename = NULL, *appdir = NULL;
   gchar *sysdir = NULL, *windir = NULL;
   int n;
-  wchar_t wfilename[MAXPATHLEN], wsysdir[MAXPATHLEN],
-    wwindir[MAXPATHLEN];
+  wchar_t wfilename[MAXPATHLEN], wsysdir[MAXPATHLEN], wwindir[MAXPATHLEN];
 #endif
   gsize len;
   gsize pathlen;
