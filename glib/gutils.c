@@ -1272,23 +1272,25 @@ g_init_user_config_dir (void)
 
   if (!g_user_config_dir)
     {
-#ifdef G_OS_WIN32
-      config_dir = get_special_folder (CSIDL_LOCAL_APPDATA);
-#else
       config_dir = (gchar *) g_getenv ("XDG_CONFIG_HOME");
 
       if (config_dir && config_dir[0])
 	config_dir = g_strdup (config_dir);
-#endif
-      if (!config_dir || !config_dir[0])
-	{
-	  g_get_any_init ();
 
-	  if (g_home_dir)
-	    config_dir = g_build_filename (g_home_dir, ".config", NULL);
-	  else
-	    config_dir = g_build_filename (g_tmp_dir, g_user_name, ".config", NULL);
-	}
+      if (!config_dir || !config_dir[0])
+        {
+#ifdef G_OS_WIN32
+          config_dir = _g_win32_get_known_folder (FOLDERID_LocalAppData,
+                                                  CSIDL_LOCAL_APPDATA);
+#else
+          g_get_any_init ();
+
+          if (g_home_dir)
+            config_dir = g_build_filename (g_home_dir, ".config", NULL);
+          else
+            config_dir = g_build_filename (g_tmp_dir, g_user_name, ".config", NULL);
+#endif
+        }
 
       g_user_config_dir = config_dir;
     }
@@ -1296,21 +1298,22 @@ g_init_user_config_dir (void)
 
 /**
  * g_get_user_config_dir:
- * 
- * Returns a base directory in which to store user-specific application 
- * configuration information such as user preferences and settings. 
+ *
+ * Returns a base directory in which to store user specific application
+ * configuration files such as preferences and settings.
  *
  * On UNIX platforms this is determined using the mechanisms described in
  * the <ulink url="http://www.freedesktop.org/Standards/basedir-spec">
  * XDG Base Directory Specification</ulink>.
  * In this case the directory retrieved will be XDG_CONFIG_HOME.
  *
- * On Windows this is the folder to use for local (as opposed to
- * roaming) application data. See documentation for
- * CSIDL_LOCAL_APPDATA. Note that on Windows it thus is the same as
- * what g_get_user_data_dir() returns.
+ * On Windows, the same mechanisms are used except the default is the directory
+ * the system uses for local (as opposed to roaming) application data.
+ * See documentation for CSIDL_LOCAL_APPDATA or FOLDERID_LocalAppData.
+ * Note that on Windows it thus is the same as what g_get_user_data_dir()
+ * and g_get_user_cache_dir() return.
  *
- * Return value: a string owned by GLib that must not be modified 
+ * Return value: a string owned by GLib that must not be modified
  *               or freed.
  * Since: 2.6
  **/
