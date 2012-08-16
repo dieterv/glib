@@ -1331,50 +1331,53 @@ g_get_user_config_dir (void)
 
 /**
  * g_get_user_cache_dir:
- * 
- * Returns a base directory in which to store non-essential, cached
- * data specific to particular user.
+ *
+ * Returns a base directory in which to store user specific non-essential data
+ * files, such as file preview thumbnail images.
  *
  * On UNIX platforms this is determined using the mechanisms described in
  * the <ulink url="http://www.freedesktop.org/Standards/basedir-spec">
  * XDG Base Directory Specification</ulink>.
  * In this case the directory retrieved will be XDG_CACHE_HOME.
  *
- * On Windows is the directory that serves as a common repository for
- * temporary Internet files. A typical path is
- * C:\Documents and Settings\username\Local Settings\Temporary Internet Files.
- * See documentation for CSIDL_INTERNET_CACHE.
+ * On Windows, the same mechanisms are used except the default is the directory
+ * the system uses for local (as opposed to roaming) application data.
+ * See documentation for CSIDL_LOCAL_APPDATA or FOLDERID_LocalAppData.
+ * Note that on Windows it thus is the same as what g_get_user_data_dir()
+ * and g_get_user_config_dir() return.
  *
- * Return value: a string owned by GLib that must not be modified 
+ * Return value: a string owned by GLib that must not be modified
  *               or freed.
  * Since: 2.6
  **/
 const gchar *
 g_get_user_cache_dir (void)
 {
-  gchar *cache_dir;  
+  gchar *cache_dir;
 
   G_LOCK (g_utils_global);
 
   if (!g_user_cache_dir)
     {
-#ifdef G_OS_WIN32
-      cache_dir = get_special_folder (CSIDL_INTERNET_CACHE); /* XXX correct? */
-#else
       cache_dir = (gchar *) g_getenv ("XDG_CACHE_HOME");
 
       if (cache_dir && cache_dir[0])
           cache_dir = g_strdup (cache_dir);
-#endif
+
       if (!cache_dir || !cache_dir[0])
-	{
-	  g_get_any_init ();
-	
+        {
+#ifdef G_OS_WIN32
+          cache_dir = _g_win32_get_known_folder (FOLDERID_LocalAppData,
+                                                 CSIDL_LOCAL_APPDATA);
+#else
+          g_get_any_init ();
+
 	  if (g_home_dir)
 	    cache_dir = g_build_filename (g_home_dir, ".cache", NULL);
 	  else
 	    cache_dir = g_build_filename (g_tmp_dir, g_user_name, ".cache", NULL);
-	}
+#endif
+        }
       g_user_cache_dir = cache_dir;
     }
   else
