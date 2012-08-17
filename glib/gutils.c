@@ -1863,8 +1863,8 @@ g_win32_get_system_data_dirs_for_module (void (*address_of_function)())
  * this function, if it can be determined.
  * 
  * Finally the list contains the "share" subfolder in the installation
- * folder for GLib, and in the installation folder for the package the
- * application's .exe file belongs to.
+ * folder for GLib and the "share" subfolder in the installation folder
+ * for the package the application's .exe file belongs to.
  *
  * The installation folders above are determined by looking up the
  * folder where the module (DLL or EXE) in question is located. If the
