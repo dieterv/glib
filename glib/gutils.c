@@ -130,8 +130,6 @@ static const GUID FOLDERID_ProgramData =
  */
 
 #ifdef G_PLATFORM_WIN32
-gchar *              _g_win32_get_glib_dll_directory (void);
-
 /*
  * _g_win32_get_glib_dll_directory:
  * @Returns: the directory where the GLib DLL is.
@@ -184,8 +182,6 @@ _g_win32_get_glib_dll_directory (void)
 #endif /* G_PLATFORM_WIN32 */
 
 #ifdef G_OS_WIN32
-static gchar *      _g_win32_get_known_folder (GUID folderid, int csidl);
-
 /*
  * _g_win32_get_known_folder:
  * @folderid: a KNOWNFOLDERID constant representing a known folder
