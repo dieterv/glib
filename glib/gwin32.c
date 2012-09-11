@@ -476,7 +476,11 @@ g_win32_get_package_installation_subdirectory (const gchar *package,
   gchar *prefix;
   gchar *dirname;
 
+/* We know g_win32_get_package_installation_directory is deprecated,
+ * don't complain about it in this case */
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
   prefix = g_win32_get_package_installation_directory (package, dll_name);
+G_GNUC_END_IGNORE_DEPRECATIONS
 
   dirname = g_build_filename (prefix, subdir, NULL);
   g_free (prefix);
