@@ -42,9 +42,7 @@
 #include <windows.h>
 #include <errno.h>
 #include <ctype.h>
-#if defined(_MSC_VER) || defined(__DMC__)
-#  include <io.h>
-#endif /* _MSC_VER || __DMC__ */
+#include <io.h>
 
 #include "glib.h"
 #include "gthreadprivate.h"
