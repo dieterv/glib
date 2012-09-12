@@ -39,9 +39,7 @@
 #include <wchar.h>
 #include <errno.h>
 
-#define STRICT			/* Strict typing, please */
 #include <windows.h>
-#undef STRICT
 #include <errno.h>
 #include <ctype.h>
 #if defined(_MSC_VER) || defined(__DMC__)

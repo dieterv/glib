@@ -60,9 +60,7 @@
 #include <string.h> /* for bzero on BSD systems */
 
 #ifdef G_OS_WIN32
-#  define STRICT                /* Strict typing, please */
-#  include <windows.h>
-#  undef STRICT
+#include <windows.h>
 #endif
 
 #include "gbacktrace.h"

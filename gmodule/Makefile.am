@@ -10,7 +10,8 @@ AM_CPPFLAGS = 				\
 if OS_WIN32
 AM_CPPFLAGS += 					\
 	-DWINVER=0x0501				\
-	-D_WIN32_WINNT=0x0501
+	-D_WIN32_WINNT=0x0501			\
+	-DSTRICT
 endif
 
 gmodule.def: gmodule.symbols
