@@ -49,6 +49,12 @@ AM_CPPFLAGS = 				\
 	-DGLIB_COMPILATION 		\
 	-DPCRE_STATIC
 
+if OS_WIN32
+AM_CPPFLAGS += 					\
+	-DWINVER=0x0501				\
+	-D_WIN32_WINNT=0x0501
+endif
+
 glib.def: glib.symbols
 	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P -DG_OS_WIN32 - <$(srcdir)/glib.symbols | sed -e '/^$$/d' -e 's/^/	/') > $(builddir)/glib.def
 

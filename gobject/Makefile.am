@@ -18,6 +18,12 @@ AM_CPPFLAGS = 					\
 	$(GLIB_DEBUG_FLAGS)			\
 	-DGOBJECT_COMPILATION
 
+if OS_WIN32
+AM_CPPFLAGS += 					\
+	-DWINVER=0x0501				\
+	-D_WIN32_WINNT=0x0501
+endif
+
 gobject.def: gobject.symbols
 	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P -DINCLUDE_VARIABLES -DINCLUDE_INTERNAL_SYMBOLS -DG_OS_WIN32 -DALL_FILES - <$(srcdir)/gobject.symbols | $(SED) -e '/^$$/d' -e 's/^/	/' -e 's/G_GNUC_[^ ]*//g' | sort) > $(builddir)/gobject.def
 

@@ -22,6 +22,12 @@ AM_CPPFLAGS = 					\
 	-DG_DISABLE_DEPRECATED 			\
 	-DGLIB_COMPILATION
 
+if OS_WIN32
+AM_CPPFLAGS += 					\
+	-DWINVER=0x0501				\
+	-D_WIN32_WINNT=0x0501
+endif
+
 EXTRA_DIST += 			\
 	ChangeLog.pre-2-20	\
 	ChangeLog.pre-2-18	\

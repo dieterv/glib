@@ -7,6 +7,12 @@ AM_CPPFLAGS = 				\
 	@GLIB_DEBUG_FLAGS@ 		\
 	-DG_DISABLE_DEPRECATED
 
+if OS_WIN32
+AM_CPPFLAGS += 					\
+	-DWINVER=0x0501				\
+	-D_WIN32_WINNT=0x0501
+endif
+
 gmodule.def: gmodule.symbols
 	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P - <$(srcdir)/gmodule.symbols | sed -e '/^$$/d' -e 's/^/	/') > $(builddir)/gmodule.def
 

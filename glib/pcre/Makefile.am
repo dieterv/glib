@@ -2,6 +2,12 @@ include $(top_srcdir)/Makefile.decl
 
 noinst_LTLIBRARIES = libpcre.la
 
+if OS_WIN32
+AM_CPPFLAGS += 					\
+	-DWINVER=0x0501				\
+	-D_WIN32_WINNT=0x0501
+endif
+
 libpcre_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"GLib-GRegex\" \
 	-DHAVE_CONFIG_H \

@@ -40,6 +40,12 @@ AM_CPPFLAGS = \
 	-DGIO_COMPILATION				\
 	-DGIO_MODULE_DIR=\"$(GIO_MODULE_DIR)\"	
 
+if OS_WIN32
+AM_CPPFLAGS += 					\
+	-DWINVER=0x0501				\
+	-D_WIN32_WINNT=0x0501
+endif
+
 lib_LTLIBRARIES = libgio-2.0.la
 
 gdbus_headers = 			\
