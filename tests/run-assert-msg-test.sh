@@ -31,10 +31,12 @@ fi
 
 msg_test="assert-msg-test"
 if [ -e ".libs/lt-$msg_test" ]; then
-       msg_test="lt-$msg_test"
+  msg_test=".libs/lt-$msg_test"
+elif [ -e "$msg_test.exe" ]; then
+  msg_test="$msg_test.exe"
 fi
 echo_v "Running gdb on assert-msg-test"
-OUT=$(libtool --mode=execute gdb --batch --ex run --ex "set print elements 0" --ex "print (char*) __glib_assert_msg" .libs/$msg_test 2> $error_out) || \
+OUT=$(libtool --mode=execute gdb --batch --ex "break abort" --ex run --ex "set print elements 0" --ex "print (char*) __glib_assert_msg" $msg_test 2> $error_out) || \
   fail "failed to run gdb"
 
 echo_v "Checking if assert message is in __glib_assert_msg"
