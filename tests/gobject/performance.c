@@ -117,7 +117,7 @@ run_test (PerformanceTest *test)
   factor = TARGET_ROUND_TIME / min_elapsed;
 
   if (verbose)
-    g_print ("Uncorrected round time: %f.4 secs, correction factor %f.2\n", min_elapsed, factor);
+    g_print ("Uncorrected round time: %.4f secs, correction factor %.2f\n", min_elapsed, factor);
 
   /* Calculate number of rounds needed */
   num_rounds = (test_length / TARGET_ROUND_TIME) + 1;
