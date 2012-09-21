@@ -23,7 +23,7 @@ for I in ${srcdir:-.}/collate/*.in; do
   name=`basename $I .in`
   ./unicode-collate $I > collate.out
   if [ $? -eq 2 ]; then
-    exit 0
+    exit 77
   fi   
   diff collate.out ${srcdir:-.}/collate/$name.unicode || 
     fail "unexpected error when using g_utf8_collate() on $I"
