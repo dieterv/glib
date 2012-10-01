@@ -434,6 +434,10 @@ test.gresource: test.gresource.xml Makefile $(shell $(glib_compile_resources) --
 
 noinst_LTLIBRARIES = libresourceplugin.la
 
+if PLATFORM_WIN32
+no_undefined = -no-undefined
+endif
+
 libresourceplugin_la_SOURCES = resourceplugin.c plugin_resources.c
 libresourceplugin_la_LDFLAGS = -avoid-version -module $(no_undefined) -rpath $(libdir)
 libresourceplugin_la_LIBADD = $(LDADD)
