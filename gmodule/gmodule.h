@@ -52,13 +52,6 @@ typedef	struct _GModule			 GModule;
 typedef const gchar* (*GModuleCheckInit) (GModule	*module);
 typedef void	     (*GModuleUnload)	 (GModule	*module);
 
-#ifndef __GTK_DOC_IGNORE__
-#ifdef G_OS_WIN32
-#define g_module_open g_module_open_utf8
-#define g_module_name g_module_name_utf8
-#endif
-#endif
-
 /* return TRUE if dynamic module loading is supported */
 gboolean	g_module_supported	   (void) G_GNUC_CONST;
 

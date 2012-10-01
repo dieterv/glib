@@ -15,7 +15,7 @@ AM_CPPFLAGS += 					\
 endif
 
 gmodule.def: gmodule.symbols
-	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P - <$(srcdir)/gmodule.symbols | sed -e '/^$$/d' -e 's/^/	/') > $(builddir)/gmodule.def
+	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P -DG_OS_WIN32 - <$(srcdir)/gmodule.symbols | sed -e '/^$$/d' -e 's/^/	/') > $(builddir)/gmodule.def
 
 EXTRA_DIST +=				\
 		makefile.msc.in 	\

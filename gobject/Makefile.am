@@ -26,7 +26,7 @@ AM_CPPFLAGS += 					\
 endif
 
 gobject.def: gobject.symbols
-	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P -DINCLUDE_VARIABLES -DINCLUDE_INTERNAL_SYMBOLS -DG_OS_WIN32 -DALL_FILES - <$(srcdir)/gobject.symbols | $(SED) -e '/^$$/d' -e 's/^/	/' -e 's/G_GNUC_[^ ]*//g' | sort) > $(builddir)/gobject.def
+	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P -DINCLUDE_INTERNAL_SYMBOLS -DG_OS_WIN32 - <$(srcdir)/gobject.symbols | $(SED) -e '/^$$/d' -e 's/^/	/' -e 's/G_GNUC_[^ ]*//g' | sort) > $(builddir)/gobject.def
 
 if OS_LINUX
 if HAVE_GNUC_VISIBILITY

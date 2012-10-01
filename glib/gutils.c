@@ -2241,66 +2241,6 @@ g_format_size_for_display (goffset size)
     }
 }
 
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-
-/* Binary compatibility versions. Not for newly compiled code. */
-
-#undef g_find_program_in_path
-
-gchar*
-g_find_program_in_path (const gchar *program)
-{
-  gchar *utf8_program = g_locale_to_utf8 (program, -1, NULL, NULL, NULL);
-  gchar *utf8_retval = g_find_program_in_path_utf8 (utf8_program);
-  gchar *retval;
-
-  g_free (utf8_program);
-  if (utf8_retval == NULL)
-    return NULL;
-  retval = g_locale_from_utf8 (utf8_retval, -1, NULL, NULL, NULL);
-  g_free (utf8_retval);
-
-  return retval;
-}
-
-#undef g_get_user_name
-
-const gchar *
-g_get_user_name (void)
-{
-  g_get_any_init_locked ();
-  return g_user_name_cp;
-}
-
-#undef g_get_real_name
-
-const gchar *
-g_get_real_name (void)
-{
-  g_get_any_init_locked ();
-  return g_real_name_cp;
-}
-
-#undef g_get_home_dir
-
-const gchar *
-g_get_home_dir (void)
-{
-  g_get_any_init_locked ();
-  return g_home_dir_cp;
-}
-
-#undef g_get_tmp_dir
-
-const gchar *
-g_get_tmp_dir (void)
-{
-  g_get_any_init_locked ();
-  return g_tmp_dir_cp;
-}
-
-#endif
-
 /* Private API:
  *
  * Returns %TRUE if the current process was executed as setuid (or an

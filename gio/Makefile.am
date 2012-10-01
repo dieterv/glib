@@ -24,7 +24,7 @@ uninstall-ms-lib:
 	$(uninstall_ms_lib_cmd)
 
 gio.def: gio.symbols
-	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P -DINCLUDE_VARIABLES -DINCLUDE_INTERNAL_SYMBOLS -DG_OS_WIN32 -DALL_FILES - <$(srcdir)/gio.symbols | sed -e '/^$$/d' -e 's/^/	/' -e 's/G_GNUC_[^ ]*//g' | sort) > $(builddir)/gio.def.tmp && \
+	$(AM_V_GEN) (echo EXPORTS; $(CPP) -P -DG_OS_WIN32 - <$(srcdir)/gio.symbols | sed -e '/^$$/d' -e 's/^/	/' -e 's/G_GNUC_[^ ]*//g' | sort) > $(builddir)/gio.def.tmp && \
 	  mv $(builddir)/gio.def.tmp $(builddir)/gio.def
 
 if OS_LINUX

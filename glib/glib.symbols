@@ -190,17 +190,15 @@ g_locale_from_utf8
 g_locale_to_utf8
 g_filename_display_name
 g_filename_display_basename
-#ifndef _WIN64
-g_filename_from_uri PRIVATE
-g_filename_from_utf8 PRIVATE
-g_filename_to_uri PRIVATE
-g_filename_to_utf8 PRIVATE
-#endif
+g_filename_from_uri
+g_filename_from_utf8
+g_filename_to_uri
+g_filename_to_utf8
 #ifdef G_OS_WIN32
-g_filename_from_uri_utf8
-g_filename_from_utf8_utf8
-g_filename_to_uri_utf8
-g_filename_to_utf8_utf8
+g_filename_from_uri_utf8=g_filename_from_uri
+g_filename_from_utf8_utf8=g_filename_from_utf8
+g_filename_to_uri_utf8=g_filename_to_uri
+g_filename_to_utf8_utf8=g_filename_to_utf8
 #endif
 g_uri_list_extract_uris
 g_datalist_clear
@@ -332,13 +330,11 @@ g_time_zone_get_abbreviation
 g_time_zone_get_offset
 g_time_zone_is_dst
 g_dir_close
-#ifndef _WIN64
-g_dir_open PRIVATE
-g_dir_read_name PRIVATE
-#endif
+g_dir_open
+g_dir_read_name
 #ifdef G_OS_WIN32
-g_dir_open_utf8
-g_dir_read_name_utf8
+g_dir_open_utf8=g_dir_open
+g_dir_read_name_utf8=g_dir_read_name
 #endif
 g_dir_rewind
 g_clear_error
@@ -359,32 +355,30 @@ g_build_path
 g_build_pathv
 g_file_error_from_errno
 g_file_error_quark
-#ifndef _WIN64
-g_file_get_contents PRIVATE
+g_file_get_contents
+#ifdef G_OS_WIN32
+g_file_get_contents_utf8=g_file_get_contents
 #endif
 g_file_set_contents
 g_dir_make_tmp
-#ifndef _WIN64
-g_file_open_tmp PRIVATE
-g_file_test PRIVATE
+g_file_open_tmp
+g_file_test
+#ifdef G_OS_WIN32
+g_file_open_tmp_utf8=g_file_open_tmp
+g_file_test_utf8=g_file_test
 #endif
 g_file_read_link
 g_format_size
 g_format_size_full
 g_format_size_for_display
-#ifndef _WIN64
-g_mkstemp PRIVATE
+g_mkstemp
+#ifdef G_OS_WIN32
+g_mkstemp_utf8=g_mkstemp
 #endif
 g_mkdtemp
 g_mkdtemp_full
 g_mkstemp_full
 g_mkdir_with_parents
-#ifdef G_OS_WIN32
-g_file_get_contents_utf8
-g_file_open_tmp_utf8
-g_file_test_utf8
-g_mkstemp_utf8
-#endif
 g_hash_table_add
 g_hash_table_contains
 g_hash_table_destroy
@@ -488,10 +482,8 @@ g_io_channel_new_file
 #ifdef G_OS_WIN32
 g_io_channel_unix_get_fd
 g_io_channel_unix_new
-#ifndef _WIN64
-g_io_channel_new_file PRIVATE
-#endif
-g_io_channel_new_file_utf8
+g_io_channel_new_file
+g_io_channel_new_file_utf8=g_io_channel_new_file
 g_io_channel_win32_get_fd
 g_io_channel_win32_make_pollfd
 g_io_channel_win32_new_fd
@@ -974,26 +966,24 @@ g_slist_remove_link
 g_slist_reverse
 g_slist_sort
 g_slist_sort_with_data
-#ifndef _WIN64
-g_spawn_async PRIVATE
-g_spawn_async_with_pipes PRIVATE
+g_spawn_async
+g_spawn_async_with_pipes
+#ifdef G_OS_WIN32
+g_spawn_async_utf8=g_spawn_async
+g_spawn_async_with_pipes_utf8=g_spawn_async_with_pipes
 #endif
 g_spawn_close_pid
-#ifndef _WIN64
-g_spawn_command_line_async PRIVATE
-g_spawn_command_line_sync PRIVATE
+g_spawn_command_line_async
+g_spawn_command_line_sync
+#ifdef G_OS_WIN32
+g_spawn_command_line_async_utf8=g_spawn_command_line_async
+g_spawn_command_line_sync_utf8=g_spawn_command_line_sync
 #endif
 g_spawn_error_quark
 g_spawn_exit_error_quark
-#ifndef _WIN64
-g_spawn_sync PRIVATE
-#endif
+g_spawn_sync
 #ifdef G_OS_WIN32
-g_spawn_async_utf8
-g_spawn_async_with_pipes_utf8
-g_spawn_command_line_async_utf8
-g_spawn_command_line_sync_utf8
-g_spawn_sync_utf8
+g_spawn_sync_utf8=g_spawn_sync
 #endif
 g_spawn_check_exit_status
 #if !defined(G_OS_UNIX) || defined(G_STDIO_NO_WRAP_ON_UNIX)
@@ -1336,13 +1326,19 @@ g_str_hash
 g_atexit
 g_basename
 g_get_application_name
-#ifndef _WIN64
-g_find_program_in_path PRIVATE
-g_get_current_dir PRIVATE
-g_getenv PRIVATE
-g_unsetenv PRIVATE
-g_get_home_dir PRIVATE
-g_setenv PRIVATE
+g_find_program_in_path
+g_get_current_dir
+g_getenv
+g_unsetenv
+g_get_home_dir
+g_setenv
+#ifdef G_OS_WIN32
+g_find_program_in_path_utf8=g_find_program_in_path
+g_get_current_dir_utf8=g_get_current_dir
+g_getenv_utf8=g_getenv
+g_unsetenv_utf8=g_unsetenv
+g_get_home_dir_utf8=g_get_home_dir
+g_setenv_utf8=g_setenv
 #endif
 g_get_host_name
 g_listenv
@@ -1350,33 +1346,21 @@ g_get_environ
 g_environ_getenv
 g_environ_setenv
 g_environ_unsetenv
-#ifdef G_OS_WIN32
-g_find_program_in_path_utf8
-g_get_current_dir_utf8
-g_getenv_utf8
-g_unsetenv_utf8
-g_setenv_utf8
-g_get_home_dir_utf8
-#endif
 g_get_language_names
 g_get_locale_variants
 g_get_prgname
-#ifndef _WIN64
-g_get_real_name PRIVATE
-#endif
+g_get_real_name
 #ifdef G_OS_WIN32
-g_get_real_name_utf8
+g_get_real_name_utf8=g_get_real_name
 #endif
 g_get_system_config_dirs
 g_get_system_data_dirs
 #ifdef G_OS_WIN32
 g_win32_get_system_data_dirs_for_module
 #endif
-#ifndef _WIN64
-g_get_tmp_dir PRIVATE
-#endif
+g_get_tmp_dir
 #ifdef G_OS_WIN32
-g_get_tmp_dir_utf8
+g_get_tmp_dir_utf8=g_get_tmp_dir
 #endif
 g_get_user_cache_dir
 g_get_user_config_dir
@@ -1384,11 +1368,9 @@ g_get_user_data_dir
 g_reload_user_special_dirs_cache
 g_get_user_runtime_dir
 g_get_user_special_dir
-#ifndef _WIN64
-g_get_user_name PRIVATE
-#endif
+g_get_user_name
 #ifdef G_OS_WIN32
-g_get_user_name_utf8
+g_get_user_name_utf8=g_get_user_name
 #endif
 glib_check_version
 glib__private__
@@ -1608,14 +1590,10 @@ g_variant_format_string_scan
 g_win32_error_message
 g_win32_ftruncate
 g_win32_get_package_installation_directory_of_module
-#ifndef _WIN64
-g_win32_get_package_installation_directory PRIVATE
-#endif
-g_win32_get_package_installation_directory_utf8
-#ifndef _WIN64
-g_win32_get_package_installation_subdirectory PRIVATE
-#endif
-g_win32_get_package_installation_subdirectory_utf8
+g_win32_get_package_installation_directory
+g_win32_get_package_installation_directory_utf8=g_win32_get_package_installation_directory
+g_win32_get_package_installation_subdirectory
+g_win32_get_package_installation_subdirectory_utf8=g_win32_get_package_installation_subdirectory
 g_win32_get_windows_version
 g_win32_getlocale
 g_win32_locale_filename_from_utf8

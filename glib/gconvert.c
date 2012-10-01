@@ -1460,35 +1460,6 @@ g_filename_to_utf8 (const gchar *opsysstring,
 		      "UTF-8", charset, bytes_read, bytes_written, error);
 }
 
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-
-#undef g_filename_to_utf8
-
-/* Binary compatibility version. Not for newly compiled code. Also not needed for
- * 64-bit versions as there should be no old deployed binaries that would use
- * the old versions.
- */
-
-gchar*
-g_filename_to_utf8 (const gchar *opsysstring, 
-		    gssize       len,           
-		    gsize       *bytes_read,   
-		    gsize       *bytes_written,
-		    GError     **error)
-{
-  const gchar *charset;
-
-  g_return_val_if_fail (opsysstring != NULL, NULL);
-
-  if (g_get_charset (&charset))
-    return strdup_len (opsysstring, len, bytes_read, bytes_written, error);
-  else
-    return g_convert (opsysstring, len, 
-		      "UTF-8", charset, bytes_read, bytes_written, error);
-}
-
-#endif
-
 /**
  * g_filename_from_utf8:
  * @utf8string:    a UTF-8 encoded string.
@@ -1530,30 +1501,6 @@ g_filename_from_utf8 (const gchar *utf8string,
     return g_convert (utf8string, len,
 		      charset, "UTF-8", bytes_read, bytes_written, error);
 }
-
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-
-#undef g_filename_from_utf8
-
-/* Binary compatibility version. Not for newly compiled code. */
-
-gchar*
-g_filename_from_utf8 (const gchar *utf8string,
-		      gssize       len,            
-		      gsize       *bytes_read,    
-		      gsize       *bytes_written,
-		      GError     **error)
-{
-  const gchar *charset;
-
-  if (g_get_charset (&charset))
-    return strdup_len (utf8string, len, bytes_read, bytes_written, error);
-  else
-    return g_convert (utf8string, len,
-		      charset, "UTF-8", bytes_read, bytes_written, error);
-}
-
-#endif
 
 /* Test of haystack has the needle prefix, comparing case
  * insensitive. haystack may be UTF-8, but needle must
@@ -1966,29 +1913,6 @@ g_filename_from_uri (const gchar *uri,
   return result;
 }
 
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-
-#undef g_filename_from_uri
-
-gchar *
-g_filename_from_uri (const gchar *uri,
-		     gchar      **hostname,
-		     GError     **error)
-{
-  gchar *utf8_filename;
-  gchar *retval = NULL;
-
-  utf8_filename = g_filename_from_uri_utf8 (uri, hostname, error);
-  if (utf8_filename)
-    {
-      retval = g_locale_from_utf8 (utf8_filename, -1, NULL, NULL, error);
-      g_free (utf8_filename);
-    }
-  return retval;
-}
-
-#endif
-
 /**
  * g_filename_to_uri:
  * @filename: an absolute filename specified in the GLib file name encoding,
@@ -2040,31 +1964,6 @@ g_filename_to_uri (const gchar *filename,
 
   return escaped_uri;
 }
-
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-
-#undef g_filename_to_uri
-
-gchar *
-g_filename_to_uri (const gchar *filename,
-		   const gchar *hostname,
-		   GError     **error)
-{
-  gchar *utf8_filename;
-  gchar *retval = NULL;
-
-  utf8_filename = g_locale_to_utf8 (filename, -1, NULL, NULL, error);
-
-  if (utf8_filename)
-    {
-      retval = g_filename_to_uri_utf8 (utf8_filename, hostname, error);
-      g_free (utf8_filename);
-    }
-
-  return retval;
-}
-
-#endif
 
 /**
  * g_uri_list_extract_uris:
