@@ -50,7 +50,7 @@ m4_define([glib_lt_current_minus_age],
 # if the minor version number is odd, then we want debugging.  Otherwise
 # we only want minimal debugging support.
 m4_define([glib_debug_default],
-          [m4_if(m4_eval(glib_minor_version % 2), [1], [yes], [minimum])])dnl
+          [m4_if(m4_eval(glib_minor_version % 2), [1], [yes], [minimum])])
 
 
 AC_INIT(glib, [glib_version],
