@@ -624,7 +624,7 @@ fi
 
 AS_IF([test x$glib_native_win32 != xyes && test x$ac_cv_sizeof_long_long = x8], [
 	# long long is a 64 bit integer.
-	AC_MSG_CHECKING(for format to printf and scanf a guint64)
+	AC_MSG_CHECKING([for guint64 printf and scanf format])
 	AC_CACHE_VAL(glib_cv_long_long_format,[
 		for format in ll q I64; do
 		  AC_TRY_RUN([#include <stdio.h>  
@@ -633,7 +633,7 @@ AS_IF([test x$glib_native_win32 != xyes && test x$ac_cv_sizeof_long_long = x8], 
 			  long long b, a = -0x3AFAFAFAFAFAFAFALL;
 			  char buffer[1000];
 			  sprintf (buffer, "%${format}u", a);
-  			  sscanf (buffer, "%${format}u", &b);
+			  sscanf (buffer, "%${format}u", &b);
 			  exit (b!=a);
 			}
 			],
@@ -650,7 +650,7 @@ AS_IF([test x$glib_native_win32 != xyes && test x$ac_cv_sizeof_long_long = x8], 
 	], [AC_MSG_RESULT(none)])
 ],[ test x$ac_cv_sizeof___int64 = x8], [
 	# __int64 is a 64 bit integer.
-	AC_MSG_CHECKING(for format to printf and scanf a guint64)
+	AC_MSG_CHECKING([for guint64 printf and scanf format])
 	# We know this is MSVCRT.DLL, and what the formats are
 	glib_cv_long_long_format=I64
 	AC_MSG_RESULT(%${glib_cv_long_long_format}u)
@@ -748,7 +748,7 @@ xyes) AC_DEFINE(G_HAVE_INLINE,1,[Have inline keyword])
 esac
 
 # if we can use inline functions in headers
-AC_MSG_CHECKING(if inline functions in headers work)
+AC_MSG_CHECKING([if inline functions in headers work])
 AC_LINK_IFELSE([AC_LANG_SOURCE([[
 #if defined (G_HAVE_INLINE) && defined (__GNUC__) && defined (__STRICT_ANSI__)
 #  undef inline
@@ -791,7 +791,7 @@ if test x$g_cv_support_dowhile_macros = xyes; then
 fi
 
 # check for flavours of varargs macros
-AC_MSG_CHECKING(for ISO C99 varargs macros in C)
+AC_MSG_CHECKING([for ISO C99 varargs macros in C])
 AC_TRY_COMPILE([],[
 int a(int p1, int p2, int p3);
 #define call_a(...) a(1,__VA_ARGS__)
@@ -799,7 +799,7 @@ call_a(2,3);
 ],g_have_iso_c_varargs=yes,g_have_iso_c_varargs=no)
 AC_MSG_RESULT($g_have_iso_c_varargs)
 
-AC_MSG_CHECKING(for ISO C99 varargs macros in C++)
+AC_MSG_CHECKING([for ISO C99 varargs macros in C++])
 AS_IF([test "$CXX" = ""], [
 dnl No C++ compiler
   g_have_iso_cxx_varargs=no
@@ -814,7 +814,7 @@ call_a(2,3);
 ])
 AC_MSG_RESULT($g_have_iso_cxx_varargs)
 
-AC_MSG_CHECKING(for GNUC varargs macros)
+AC_MSG_CHECKING([for GNUC varargs macros])
 AC_TRY_COMPILE([],[
 int a(int p1, int p2, int p3);
 #define call_a(params...) a(1,params)
@@ -823,7 +823,7 @@ call_a(2,3);
 AC_MSG_RESULT($g_have_gnuc_varargs)
 
 # check for GNUC visibility support
-AC_MSG_CHECKING(for GNUC visibility attribute)
+AC_MSG_CHECKING([for GNUC visibility attribute])
 GLIB_CHECK_COMPILE_WARNINGS([AC_LANG_SOURCE([[
 void
 __attribute__ ((visibility ("hidden")))
@@ -1321,7 +1321,7 @@ fi
 dnl ****************************************
 dnl *** posix_memalign                   ***
 dnl ****************************************
-AC_MSG_CHECKING(for a compliant posix_memalign() implementation)
+AC_MSG_CHECKING([for a compliant posix_memalign() implementation])
 AC_CACHE_VAL(glib_cv_compliant_posix_memalign,[
     glib_cv_compliant_posix_memalign=0
     if test "$ac_cv_func_posix_memalign" = "yes" ; then
@@ -1612,7 +1612,7 @@ else
         G_MODULE_SUPPORTED=true
 fi
 
-AC_MSG_CHECKING(for the suffix of module shared libraries)
+AC_MSG_CHECKING([for the suffix of module shared libraries])
 export SED
 shrext_cmds=`./libtool --config | grep '^shrext_cmds='`
 eval $shrext_cmds
@@ -1640,7 +1640,7 @@ dnl **********************
 dnl *** g_spawn checks ***
 dnl **********************
 
-AC_MSG_CHECKING(for gspawn implementation)
+AC_MSG_CHECKING([for gspawn implementation])
 case "$host" in
   *-*-mingw*)
     GSPAWN=gspawn-win32.lo
@@ -1656,7 +1656,7 @@ dnl *************************
 dnl *** GIOChannel checks ***
 dnl *************************
 
-AC_MSG_CHECKING(for GIOChannel implementation)
+AC_MSG_CHECKING([for GIOChannel implementation])
 case "$host" in
   *-*-mingw*)
     GIO=giowin32.lo
@@ -1857,7 +1857,7 @@ dnl ****************************************
 dnl *** platform dependent source checks ***
 dnl ****************************************
 
-AC_MSG_CHECKING(for platform-dependent source)
+AC_MSG_CHECKING([for platform-dependent source])
 case "$host" in
   *-*-cygwin*|*-*-mingw*)
     PLATFORMDEP=gwin32.lo
@@ -1936,7 +1936,7 @@ AIX_COMPILE_INFO="AIX's C compiler needs to be called by a different name, when
 dnl determination of thread implementation
 dnl ***************************************
 
-AC_MSG_CHECKING(for thread implementation)
+AC_MSG_CHECKING([for thread implementation])
 
 have_threads=no
 AS_IF([ test "x$with_threads" = xyes || test "x$with_threads" = xposix], [
@@ -2094,7 +2094,7 @@ AC_EGREP_CPP([[^a-zA-Z1-9_]localtime_r[^a-zA-Z1-9_]], [#include <time.h>], ,
 
 CPPFLAGS="$glib_save_CPPFLAGS"
 
-AC_MSG_CHECKING(thread related cflags)
+AC_MSG_CHECKING([thread related cflags])
 AC_MSG_RESULT($G_THREAD_CFLAGS)
 CPPFLAGS="$CPPFLAGS $G_THREAD_CFLAGS"
 
@@ -2130,7 +2130,7 @@ AS_IF([test x$have_threads = xposix], [
 			
 			LIBS="$add_thread_lib $glib_save_LIBS"
 			
-			AC_MSG_CHECKING(for pthread_create/pthread_join$IN)
+			AC_MSG_CHECKING([for pthread_create/pthread_join$IN])
 			AC_TRY_RUN(glib_thread_test($defattr),
                                    glib_result=yes,
                                    glib_result=no,
@@ -2175,7 +2175,7 @@ case $host in
     ;;
 esac
 
-AC_MSG_CHECKING(thread related libraries)
+AC_MSG_CHECKING([thread related libraries])
 AC_MSG_RESULT($G_THREAD_LIBS)
 
 dnl check for mt safe function variants and some posix functions
@@ -2270,7 +2270,7 @@ AS_IF([ test x"$have_threads" = xposix], [
         CPPFLAGS="$CPPFLAGS $GTHREAD_COMPILE_IMPL_DEFINES"
         # This is not AC_CHECK_FUNC to also work with function
         # name mangling in header files.
-        AC_MSG_CHECKING(for pthread_attr_setstacksize)
+        AC_MSG_CHECKING([for pthread_attr_setstacksize])
         AC_LINK_IFELSE(
             [AC_LANG_PROGRAM(
                 [#include <pthread.h>],
@@ -2279,7 +2279,7 @@ AS_IF([ test x"$have_threads" = xposix], [
              AC_DEFINE(HAVE_PTHREAD_ATTR_SETSTACKSIZE,1,
                 [Have function pthread_attr_setstacksize])],
             [AC_MSG_RESULT(no)])
-        AC_MSG_CHECKING(for pthread_condattr_setclock)
+        AC_MSG_CHECKING([for pthread_condattr_setclock])
         AC_LINK_IFELSE(
             [AC_LANG_PROGRAM(
                 [#include <pthread.h>],
