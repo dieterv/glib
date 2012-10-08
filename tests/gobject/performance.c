@@ -22,6 +22,10 @@
 #include <glib-object.h>
 #include "testcommon.h"
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
+
 #define WARM_UP_N_RUNS 50
 #define ESTIMATE_ROUND_TIME_N_RUNS 5
 #define DEFAULT_TEST_TIME 15 /* seconds */
@@ -106,6 +110,9 @@ run_test (PerformanceTest *test)
       else
 	min_elapsed = MIN (min_elapsed, elapsed);
     }
+
+  if (min_elapsed == 0)
+    min_elapsed = 0.001;
 
   factor = TARGET_ROUND_TIME / min_elapsed;
 
@@ -893,6 +900,10 @@ main (int   argc,
   GError *error = NULL;
   int i;
 
+#ifdef G_OS_WIN32
+  timeBeginPeriod (1);
+#endif
+
   context = g_option_context_new ("GObject performance tests");
   g_option_context_add_main_entries (context, cmd_entries, NULL);
   if (!g_option_context_parse (context, &argc, &argv, &error))
@@ -915,6 +926,10 @@ main (int   argc,
       for (i = 0; i < G_N_ELEMENTS (tests); i++)
 	run_test (&tests[i]);
     }
+
+#ifdef G_OS_WIN32
+  timeEndPeriod (1);
+#endif
 
   return 0;
 }
